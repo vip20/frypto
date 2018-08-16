@@ -1,6 +1,11 @@
 <template lang="html">
   <div class="window">
     <toolbar type="header" title="Frypto" class="header">
+      <ul>
+          <li @click="minimize()" title="Minimize"><span></span></li>
+          <li @click="maximize()" title="Maximize"><span></span></li>
+          <li @click="close()" title="Close"><span class='titlebarClose'></span></li>
+      </ul>
       <toolbar-actions>
         <button-group>
           <btn><icon icon="home"></icon></btn>
@@ -9,6 +14,7 @@
           <btn><icon icon="popup"></icon></btn>
           <btn><icon icon="shuffle"></icon></btn>
         </button-group>
+                
 
 
         <btn><icon icon="home" :text="true"></icon>Filters</btn>
@@ -22,7 +28,7 @@
     <div class="window-content">
 
 
-  <Nav/>
+  <Table/>
     </div>
 
     <toolbar type="footer">
@@ -42,9 +48,27 @@ import {
   ButtonGroup,
   Icon
 } from "vue-photonkit";
-import Nav from "@/components/Nav.vue";
+import Table from "@/components/Table.vue";
+
+const electron = require("electron");
+
+let win = electron.remote.getCurrentWindow();
 export default {
-  components: { Toolbar, ToolbarActions, Btn, ButtonGroup, Icon, Nav }
+  components: { Toolbar, ToolbarActions, Btn, ButtonGroup, Icon, Table },
+  methods: {
+    minimize() {
+      win.minimize();
+    },
+
+    maximize() {
+      if (!win.isMaximized()) win.maximize();
+      else win.unmaximize();
+    },
+
+    close() {
+      win.close();
+    }
+  }
 };
 </script>
 
@@ -52,6 +76,51 @@ export default {
 @import "../photon/dist/css/photon.css";
 .header {
   -webkit-app-region: drag;
+  .toolbar-header .title {
+    margin-top: 1px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+  }
+  ul {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: -7px;
+    right: 0px;
+
+    li {
+      padding: 0px 16px;
+      -webkit-app-region: no-drag;
+      display: -webkit-box;
+
+      span {
+        width: 10px;
+        height: 10px;
+        border: 2px solid #7e7e7e;
+        border-radius: 10px;
+        background: #7e7e7e;
+        display: block;
+        transition: all 0.4s ease-in-out;
+      }
+
+      .titlebarClose {
+        background: #eb6466;
+        border-color: #eb6466;
+      }
+
+      &:hover {
+        span {
+          box-shadow: 0px 0px 10px #636363;
+        }
+
+        .titlebarClose {
+          box-shadow: 0px 0px 10px #cf5657;
+        }
+      }
+    }
+  }
+
   .toolbar-actions {
     -webkit-app-region: initial;
   }
