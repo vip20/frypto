@@ -21,7 +21,7 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    READ_FOL: state => {
+    READ_FOLDER: state => {
       let location = state.location;
       fs.readdir(location, (err, files) => {
         "use strict";
@@ -60,6 +60,7 @@ export default new Vuex.Store({
     CHANGE_LOC: (state, link) => {
       console.log(link);
       state.location = link;
+      state.files = [];
     }
   },
   actions: {}

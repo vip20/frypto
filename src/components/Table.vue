@@ -10,7 +10,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for = "file in files" :key="file.id" @dblclick="file.type == ''? changeLoc(file.id):openFile(file.id)" >
+    <tr v-for = "file in files" :key="file.hash" @dblclick="file.type == ''? changeLoc(file.id):openFile(file.id)" >
       
       <td>{{file.name}}</td>
       <td>{{file.type}}</td>
@@ -29,20 +29,18 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(["files", "previousLoc"])
+    ...mapState(["location", "files", "previousLoc"])
   },
   mounted() {
-    this.READ_FOL();
+    this.READ_FOLDER();
     console.log(this.files);
   },
   methods: {
-    ...mapMutations(["CHANGE_LOC", "READ_FOL"]),
+    ...mapMutations(["CHANGE_LOC", "READ_FOLDER"]),
     changeLoc: function(path) {
       this.CHANGE_LOC(path);
-      this.READ_FOL();
-    },
-    readFolder: function() {
-      this.filesArr;
+      this.READ_FOLDER();
+      console.log(this.files);
     },
     openFile(path) {
       shell.openItem(path);
