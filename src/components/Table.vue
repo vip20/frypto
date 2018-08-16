@@ -5,12 +5,17 @@
   <thead>
     <tr>
       <th @click ="readFolder()">Name</th>
-      <th @click ="changeLoc(previousLoc)">Kind</th>
+      <th>Kind</th>
       <th>File Size</th>
     </tr>
   </thead>
   <tbody>
-    <tr v-for = "file in files" :key="file.hash" @dblclick="file.type == ''? changeLoc(file.id):openFile(file.id)" >
+    <tr @dblclick ="changeLoc(previousLoc)">
+      <td>..</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr v-for = "file in files" :key="file.id" @dblclick="file.type == ''? changeLoc(file.id):openFile(file.id)" >
       
       <td>{{file.name}}</td>
       <td>{{file.type}}</td>
@@ -40,7 +45,6 @@ export default {
     changeLoc: function(path) {
       this.CHANGE_LOC(path);
       this.READ_FOLDER();
-      console.log(this.files);
     },
     openFile(path) {
       shell.openItem(path);
