@@ -74,23 +74,27 @@ export default {
 
 <style lang="scss">
 @import "../photon/dist/css/photon.css";
+.toolbar-header .title {
+  margin-top: 1px;
+  font-weight: 600;
+  text-transform: uppercase !important;
+  font-size: 13px;
+  color: white !important;
+}
 .header {
   -webkit-app-region: drag;
-  .toolbar-header .title {
-    margin-top: 1px;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 13px;
-  }
+  background-image: linear-gradient(to bottom, #003994 0%, #164ea3 100%);
+
   ul {
     display: flex;
     flex-direction: row;
     position: absolute;
     top: -7px;
-    right: 0px;
+    left: 0px;
+    padding-left: 0px !important;
 
     li {
-      padding: 0px 16px;
+      padding: 0px 9px;
       -webkit-app-region: no-drag;
       display: -webkit-box;
 
@@ -105,8 +109,8 @@ export default {
       }
 
       .titlebarClose {
-        background: #eb6466;
-        border-color: #eb6466;
+        background: white;
+        border-color: white;
       }
 
       &:hover {
