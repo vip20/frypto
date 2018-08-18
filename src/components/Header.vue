@@ -7,21 +7,14 @@
           <li @click="close()" title="Close"><span class='titlebarClose'></span></li>
       </ul>
       <toolbar-actions>
-        <button-group>
-          <btn><icon icon="home"></icon></btn>
-          <btn><icon icon="folder"></icon></btn>
-          <btn :active="true"><icon icon="cloud"></icon></btn>
-          <btn><icon icon="popup"></icon></btn>
-          <btn><icon icon="shuffle"></icon></btn>
-        </button-group>
-                
+        <input type="text" id="path" class="form-control" :value="path" @keyup.enter="changeLocation()" placeholder="Location">
 
 
-        <btn><icon icon="home" :text="true"></icon>Filters</btn>
+        <!-- <btn><icon icon="home" :text="true"></icon>Filter</btn> -->
 
-        <btn class="btn-dropdown pull-right">
+        <!-- <btn class="btn-dropdown pull-right">
           <icon icon="megaphone"></icon>
-        </btn>
+        </btn> -->
       </toolbar-actions>
     </toolbar>
 
@@ -49,6 +42,7 @@ import {
   Icon
 } from "vue-photonkit";
 import Table from "@/components/Table.vue";
+import { mapMutations, mapState } from "vuex";
 
 const electron = require("electron");
 const os = require("os");
@@ -65,8 +59,18 @@ export default {
       this.isMacOS = true;
     }
   },
+  computed: {
+    ...mapState({
+      path: "location"
+    })
+  },
   components: { Toolbar, ToolbarActions, Btn, ButtonGroup, Icon, Table },
   methods: {
+    ...mapMutations(["CHANGE_LOC", "READ_FOLDER"]),
+    changeLocation() {
+      this.CHANGE_LOC(this.$refs.pathVal.value);
+      this.READ_FOLDER();
+    },
     minimize() {
       win.minimize();
     },
@@ -85,6 +89,10 @@ export default {
 
 <style lang="scss">
 @import "../photon/dist/css/photon.css";
+#location {
+  width: auto;
+  height: 16px;
+}
 .toolbar {
   background-image: linear-gradient(to bottom, #003994 0%, #164ea3 100%);
 }
@@ -97,7 +105,20 @@ export default {
 }
 .header {
   -webkit-app-region: drag;
-
+  input {
+    cursor: text;
+    -webkit-app-region: no-drag;
+    width: 80%;
+    height: 18px;
+    background: none;
+    border: none;
+    color: white;
+  }
+  input#path:focus {
+    box-shadow: none;
+    border-bottom: 1px solid white;
+    border-radius: 0px;
+  }
   ul {
     display: flex;
     flex-direction: row;

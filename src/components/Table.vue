@@ -67,7 +67,9 @@ td,
 th {
   display: block;
 }
-
+tr:active {
+  background-image: linear-gradient(to bottom, #003994 0%, #164ea3 100%);
+}
 tr:after {
   content: " ";
   display: block;
