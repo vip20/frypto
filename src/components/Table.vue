@@ -4,9 +4,9 @@
 <table class="table-striped">
   <thead>
     <tr>
-      <th @click ="readFolder()">Name</th>
-      <th>Kind</th>
-      <th>File Size</th>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Size</th>
     </tr>
   </thead>
   <tbody>
@@ -19,7 +19,7 @@
       
       <td>{{file.name}}</td>
       <td>{{file.type}}</td>
-      <td>{{file.size}}</td>
+      <td><template  v-if="file.type!=''">{{file.size | bytes}}</template></td>
     </tr>
   </tbody>
 </table>
@@ -54,6 +54,66 @@ export default {
 };
 </script>
 
-<style lang="sass">
-@import '../photon/dist/css/photon.css'
+<style lang="scss">
+@import "../photon/dist/css/photon.css";
+table {
+  width: 100%;
+}
+
+thead,
+tbody,
+tr,
+td,
+th {
+  display: block;
+}
+
+tr:after {
+  content: " ";
+  display: block;
+  visibility: hidden;
+  clear: both;
+}
+
+thead th {
+  // height: 30px;
+
+  /*text-align: left;*/
+}
+
+tbody {
+  height: auto;
+  overflow-y: auto;
+}
+
+thead {
+  /* fallback */
+}
+
+tbody td,
+thead th {
+  float: left;
+}
+thead {
+  th:nth-child(1) {
+    width: 60%;
+  }
+  th:nth-child(2) {
+    width: 20%;
+  }
+  th:nth-child(3) {
+    width: 20%;
+  }
+}
+tbody {
+  td:nth-child(1) {
+    width: 60%;
+  }
+  td:nth-child(2) {
+    width: 20%;
+  }
+  td:nth-child(3) {
+    width: 20%;
+  }
+}
 </style>

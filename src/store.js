@@ -10,16 +10,7 @@ export default new Vuex.Store({
     files: [],
     previousLoc: ""
   },
-  getters: {
-    formatBytes: (bytes, decimals) => {
-      if (bytes == 0) return "0 Bytes";
-      var k = 1024,
-        dm = decimals || 2,
-        sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
-        i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-    }
-  },
+  getters: {},
   mutations: {
     READ_FOLDER: state => {
       let location = state.location;
@@ -31,7 +22,7 @@ export default new Vuex.Store({
           tempPath.splice(tempPath.length - 2, 1);
           state.previousLoc = tempPath.join("/");
         }
-
+        state.files = [];
         for (let file of files) {
           fs.stat(location + file, (err, stats) => {
             let fileObj = {};
@@ -48,7 +39,7 @@ export default new Vuex.Store({
               fileObj = {
                 name: file,
                 type: file.substring(file.lastIndexOf(".") + 1, file.length),
-                // size: getters.formatBytes(stats.size, 2),
+                size: stats.size,
                 id: `${location}${file}`
               };
             }

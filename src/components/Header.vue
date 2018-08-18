@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="window">
     <toolbar type="header" title="Frypto" class="header">
-      <ul>
+      <ul v-if="!isMacOS">
           <li @click="minimize()" title="Minimize"><span></span></li>
           <li @click="maximize()" title="Maximize"><span></span></li>
           <li @click="close()" title="Close"><span class='titlebarClose'></span></li>
@@ -51,9 +51,20 @@ import {
 import Table from "@/components/Table.vue";
 
 const electron = require("electron");
+const os = require("os");
 
 let win = electron.remote.getCurrentWindow();
 export default {
+  data() {
+    return {
+      isMacOS: false
+    };
+  },
+  mounted() {
+    if (os.platform == "darwin") {
+      this.isMacOS = true;
+    }
+  },
   components: { Toolbar, ToolbarActions, Btn, ButtonGroup, Icon, Table },
   methods: {
     minimize() {
@@ -74,6 +85,9 @@ export default {
 
 <style lang="scss">
 @import "../photon/dist/css/photon.css";
+.toolbar {
+  background-image: linear-gradient(to bottom, #003994 0%, #164ea3 100%);
+}
 .toolbar-header .title {
   margin-top: 1px;
   font-weight: 600;
@@ -83,7 +97,6 @@ export default {
 }
 .header {
   -webkit-app-region: drag;
-  background-image: linear-gradient(to bottom, #003994 0%, #164ea3 100%);
 
   ul {
     display: flex;
