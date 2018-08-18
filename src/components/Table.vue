@@ -58,6 +58,7 @@ export default {
 @import "../photon/dist/css/photon.css";
 table {
   width: 100%;
+  table-layout: fixed;
 }
 
 thead,
@@ -67,9 +68,10 @@ td,
 th {
   display: block;
 }
-tr:active {
+tbody tr:active {
   background-image: linear-gradient(to bottom, #003994 0%, #164ea3 100%);
 }
+
 tr:after {
   content: " ";
   display: block;
@@ -98,12 +100,18 @@ thead th {
 }
 thead {
   th:nth-child(1) {
+    max-width: 60%;
+    min-width: 60%;
     width: 60%;
   }
   th:nth-child(2) {
+    max-width: 20%;
+    min-width: 20%;
     width: 20%;
   }
   th:nth-child(3) {
+    max-width: 20%;
+    min-width: 20%;
     width: 20%;
   }
 }
