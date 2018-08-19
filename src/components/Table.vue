@@ -15,7 +15,7 @@
       <td></td>
       <td></td>
     </tr>
-    <tr v-for = "file in files" :key="file.id" @dblclick="file.type == ''? changeLoc(file.id):openFile(file.id)" >
+    <tr v-for = "file in orderedFiles" @contextmenu= "openMenu(file)" @click="clickRow(file.id)":class="{highlight:selected == file.id}" :key="file.id" @dblclick="file.type == '' ? changeLoc(file.id):openFile(file.id)" >
       
       <td>{{file.name}}</td>
       <td>{{file.type}}</td>
@@ -28,17 +28,40 @@
 <script>
 const { shell } = require("electron");
 import { NavGroup, NavGroupItem, Icon } from "vue-photonkit";
-import { mapMutations, mapState, mapGetters } from "vuex";
+import { mapMutations, mapState } from "vuex";
+const { remote } = require("electron");
+const { Menu, MenuItem } = remote;
+import { Safe } from "@/safe/safe.js";
+var path = require("path");
+import _ from "lodash";
+
+// Build menu one item at a time, unlike
+
+// Prevent default action of right click in chromium. Replace with our menu.
+// window.addEventListener(
+//   "contextmenu",
+//   e => {
+//     e.preventDefault();
+//     menu.popup(remote.getCurrentWindow());
+//   },
+//   false
+// );
 export default {
   data() {
-    return {};
+    return {
+      selected: undefined
+    };
   },
   computed: {
-    ...mapState(["location", "files", "previousLoc"])
+    ...mapState(["location", "files", "previousLoc"]),
+
+    orderedFiles: function() {
+      return _.orderBy(this.files, "name", "asc");
+    }
   },
   mounted() {
     this.READ_FOLDER();
-    console.log(this.files);
+    // console.log(this.files);
   },
   methods: {
     ...mapMutations(["CHANGE_LOC", "READ_FOLDER"]),
@@ -46,8 +69,55 @@ export default {
       this.CHANGE_LOC(path);
       this.READ_FOLDER();
     },
+    readFolder() {
+      this.READ_FOLDER();
+    },
+    clickRow(id) {
+      this.selected = id;
+    },
     openFile(path) {
       shell.openItem(path);
+    },
+    openMenu(file) {
+      this.clickRow(file.id);
+      if (file.type != "") {
+        this.menuMethod(file.id);
+      }
+    },
+    decryptMethod(id) {
+      const menu = new Menu();
+      menu.append(
+        new MenuItem({
+          label: "Decrpt this file",
+          click: () => {
+            var safe = new Safe(id, "1234", true);
+            safe.decrypt();
+            this.readFolder();
+          }
+        })
+      );
+      menu.popup(remote.getCurrentWindow());
+    },
+    encryptMethod(id) {
+      const menu = new Menu();
+      menu.append(
+        new MenuItem({
+          label: "Encrpt this file",
+          click: () => {
+            var safe = new Safe(id, "1234", true);
+            safe.encrypt();
+            this.readFolder();
+          }
+        })
+      );
+      menu.popup(remote.getCurrentWindow());
+    },
+    menuMethod(id) {
+      if (path.extname(id) == ".fryp") {
+        this.decryptMethod(id);
+      } else {
+        this.encryptMethod(id);
+      }
     }
   },
   components: { NavGroup, NavGroupItem, Icon }
@@ -68,8 +138,10 @@ td,
 th {
   display: block;
 }
-tbody tr:active {
+tbody tr:active,
+tbody tr.highlight {
   background-image: linear-gradient(to bottom, #003994 0%, #164ea3 100%);
+  color: #fff;
 }
 
 tr:after {

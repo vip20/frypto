@@ -10,6 +10,8 @@
     "serve:electron": "vue-cli-service serve:electron"
   },
   "dependencies": {
+    "crypto": "^1.0.1",
+    "hashcode": "^1.0.3",
     "vue": "^2.5.17",
     "vue-photonkit": "^1.2.3",
     "vue-router": "^3.0.1",

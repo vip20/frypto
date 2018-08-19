@@ -1,4 +1,4 @@
-
+<!-- This is not yet implemented-->
 <template lang="html">
   <nav-group title="Favorites">
     <nav-group-item :active="true"><icon icon="home"></icon>Home</nav-group-item>
