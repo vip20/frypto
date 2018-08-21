@@ -68,7 +68,7 @@ export default {
   methods: {
     ...mapMutations(["CHANGE_LOC", "READ_FOLDER"]),
     changeLocation() {
-      this.CHANGE_LOC(path);
+      this.CHANGE_LOC(this.path);
       this.READ_FOLDER();
     },
     minimize() {

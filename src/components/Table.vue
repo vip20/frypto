@@ -1,6 +1,7 @@
 
 <template lang="html">
 <!-- <button  >hi</button> -->
+<div>
 <table class="table-striped">
   <thead>
     <tr>
@@ -23,6 +24,14 @@
     </tr>
   </tbody>
 </table>
+<Modal v-if="showModal" @close="showModal = false">
+    <!--
+      you can use custom content here to overwrite
+      default content
+    -->
+    <h1 class="title" slot="header">{{modalHeader}}</h1>
+  </Modal>
+</div>
 </template>
 
 <script>
@@ -32,6 +41,7 @@ import { mapMutations, mapState } from "vuex";
 const { remote } = require("electron");
 const { Menu, MenuItem } = remote;
 import { Safe } from "@/safe/safe.js";
+import Modal from "@/components/Modal.vue";
 var path = require("path");
 import _ from "lodash";
 
@@ -49,7 +59,9 @@ import _ from "lodash";
 export default {
   data() {
     return {
-      selected: undefined
+      selected: undefined,
+      showModal: false,
+      modalHeader: ""
     };
   },
   computed: {
@@ -90,9 +102,12 @@ export default {
         new MenuItem({
           label: "Decrpt this file",
           click: () => {
-            var safe = new Safe(id, "1234", true);
-            safe.decrypt();
-            this.readFolder();
+            // var safe = new Safe(id, "1234", true);
+            // safe.decrypt();
+            // this.readFolder();
+
+            this.showModal = true;
+            this.modalHeader = "Decrypt File";
           }
         })
       );
@@ -104,9 +119,11 @@ export default {
         new MenuItem({
           label: "Encrpt this file",
           click: () => {
-            var safe = new Safe(id, "1234", true);
-            safe.encrypt();
-            this.readFolder();
+            // var safe = new Safe(id, "1234", true);
+            // safe.encrypt();
+            // this.readFolder();
+            this.showModal = true;
+            this.modalHeader = "Encrypt File";
           }
         })
       );
@@ -120,7 +137,7 @@ export default {
       }
     }
   },
-  components: { NavGroup, NavGroupItem, Icon }
+  components: { NavGroup, NavGroupItem, Icon, Modal }
 };
 </script>
 
