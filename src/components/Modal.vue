@@ -18,7 +18,7 @@
       <toolbar-actions>
            <slot name="footer">
         <button class="btn btn- btn-default" @click="$emit('close')">Cancel</button>
-        <button class="btn btn- btn-default pull-right">Okay</button>
+        <button :disabled="!isPassword" class="btn btn- btn-default pull-right" @click="$emit('submit')">Okay</button>
         </slot>
       </toolbar-actions>
     </toolbar>
@@ -36,6 +36,14 @@ import {
   Icon
 } from "vue-photonkit";
 export default {
+  props: {
+    isPassword: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    }
+  },
   data() {
     return {};
   },
@@ -118,5 +126,9 @@ export default {
 .modal-leave-active .modal-container {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
 }
 </style>

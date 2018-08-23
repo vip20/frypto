@@ -24,12 +24,39 @@
     </tr>
   </tbody>
 </table>
-<Modal v-if="showModal" @close="showModal = false">
-    <!--
-      you can use custom content here to overwrite
-      default content
-    -->
-    <h1 class="title" slot="header">{{modalHeader}}</h1>
+<Modal v-if="showModal" @close="showModal = false" @submit="action" :isPassword="modalHeader==='encrypt'?(enc.password!='' && enc.password==confirmPassword): dec.password!=''">
+    <h1 class="title" slot="header">{{modalHeader}} file</h1>
+    <form slot="body" v-if="modalHeader=='encrypt'">
+      <div class="form-group">
+    <input :type="passwordFieldType" autofocus class="form-control" placeholder="Key" v-model="enc.password">
+  </div>
+  <div class="form-group">
+    <input type="password" class="form-control" v-model="confirmPassword" placeholder="Confirm Key">
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" v-model="showPassword" @click="switchVisibility"> Show Password
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" v-model="enc.fileNameEnc" > Encrypt file name
+    </label>
+  </div>
+      </form>
+      <form slot="body" v-if="modalHeader=='decrypt'">
+         <div class="form-group">
+    <input :type="passwordFieldType" autofocus class="form-control" placeholder="Key" v-model="dec.password">
+    <span style="color: #bf0000;">{{errorMsg}}</span>
+  </div>
+    
+    <div class="checkbox">
+    <label>
+      <input type="checkbox" v-model="showPassword" @click="switchVisibility"> Show Password
+    </label>
+  </div>
+
+        </form>
   </Modal>
 </div>
 </template>
@@ -61,7 +88,14 @@ export default {
     return {
       selected: undefined,
       showModal: false,
-      modalHeader: ""
+      modalHeader: "",
+      confirmPassword: "",
+      enc: { password: "", fileNameEnc: false },
+      dec: { password: "" },
+      passwordFieldType: "password",
+      showPassword: false,
+      fileId: "",
+      errorMsg: ""
     };
   },
   computed: {
@@ -77,6 +111,18 @@ export default {
   },
   methods: {
     ...mapMutations(["CHANGE_LOC", "READ_FOLDER"]),
+    switchVisibility() {
+      this.passwordFieldType =
+        this.showPassword === false ? "text" : "password";
+    },
+    onInit() {
+      this.passwordFieldType = "password";
+      this.showPassword = false;
+      this.confirmPassword = "";
+      this.errorMsg = "";
+      this.enc = { password: "", fileNameEnc: false };
+      this.dec = { password: "" };
+    },
     changeLoc: function(path) {
       this.CHANGE_LOC(path);
       this.READ_FOLDER();
@@ -102,12 +148,10 @@ export default {
         new MenuItem({
           label: "Decrpt this file",
           click: () => {
-            // var safe = new Safe(id, "1234", true);
-            // safe.decrypt();
-            // this.readFolder();
-
+            this.onInit();
             this.showModal = true;
-            this.modalHeader = "Decrypt File";
+            this.modalHeader = "decrypt";
+            this.fileId = id;
           }
         })
       );
@@ -119,15 +163,39 @@ export default {
         new MenuItem({
           label: "Encrpt this file",
           click: () => {
-            // var safe = new Safe(id, "1234", true);
-            // safe.encrypt();
-            // this.readFolder();
+            this.onInit();
             this.showModal = true;
-            this.modalHeader = "Encrypt File";
+            this.modalHeader = "encrypt";
+            this.fileId = id;
           }
         })
       );
       menu.popup(remote.getCurrentWindow());
+    },
+    action() {
+      if (this.modalHeader == "encrypt") {
+        var safe = new Safe(
+          this.fileId,
+          this.enc.password,
+          this.enc.fileNameEnc
+        );
+        safe.encrypt();
+        this.readFolder();
+        this.showModal = false;
+      } else {
+        var safe = new Safe(this.fileId, this.dec.password, true);
+        try {
+          safe.decrypt();
+
+          this.readFolder();
+          this.showModal = false;
+        } catch (exception) {
+          var e = exception.toString();
+          if (e.indexOf("bad decrypt") > 0) {
+            this.errorMsg = "Bad Key, Try Again.";
+          }
+        }
+      }
     },
     menuMethod(id) {
       if (path.extname(id) == ".fryp") {
@@ -213,6 +281,30 @@ tbody {
   }
   td:nth-child(3) {
     width: 20%;
+  }
+}
+.modal-body {
+  .form-group,
+  .checkbox {
+    padding: 0em 1em !important;
+    margin: 5px 0px !important;
+
+    .form-control,
+    .checkbox {
+      width: 21em;
+      height: 2em;
+    }
+  }
+  input.form-control {
+    border: none;
+    border-bottom: 1px solid lightgrey;
+    border-radius: 0px;
+  }
+
+  input.form-control:focus {
+    border: none;
+    box-shadow: 0px 1px 0 #3491f3, -3px -3px 0 rgba(109, 179, 253, 0),
+      -3px 3px 0 rgba(109, 179, 253, 0), 3px -3px 0 rgba(109, 179, 253, 0);
   }
 }
 </style>
