@@ -54,7 +54,7 @@ export default {
 };
 </script>
   <style lang="scss">
-@import "../photon/dist/css/photon.css";
+@import "./photon/dist/css/photon.css";
 .modal-mask {
   position: fixed;
   z-index: 9998;

@@ -88,7 +88,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../photon/dist/css/photon.css";
+@import "./photon/dist/css/photon.css";
 #location {
   width: auto;
   height: 16px;
