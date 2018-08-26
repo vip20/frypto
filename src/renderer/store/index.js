@@ -6,7 +6,7 @@ const fs = require("fs");
 
 export default new Vuex.Store({
   state: {
-    location: "/media/vinay/Media & Docs/",
+    location: "/media",
     files: [],
     previousLoc: ""
   },
