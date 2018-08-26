@@ -210,7 +210,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../photon/dist/css/photon.css";
+@import "./photon/dist/css/photon.css";
 table {
   width: 100%;
   table-layout: fixed;

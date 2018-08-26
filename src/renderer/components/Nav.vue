@@ -24,5 +24,5 @@ export default {
 </script>
 
 <style lang="sass">
-@import '../photon/dist/css/photon.css'
+@import './photon/dist/css/photon.css'
 </style>
